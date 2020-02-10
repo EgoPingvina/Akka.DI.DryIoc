@@ -19,13 +19,13 @@ namespace Akka.DI.DryIoc
 
         public DryIocDependencyResolver(IContainer container, ActorSystem system)
         {
-            this.container = container
+            this.container  = container
                 ?? throw new ArgumentNullException("container");
 
-            this.system = system
+            this.system     = system
                 ?? throw new ArgumentNullException("system");
 
-            this.typeCache = new ConcurrentDictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
+            this.typeCache  = new ConcurrentDictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
             this.references = new ConditionalWeakTable<ActorBase, IResolverContext>();
 
             this.system.AddDependencyResolver(this);
@@ -33,12 +33,12 @@ namespace Akka.DI.DryIoc
 
         public Func<ActorBase> CreateActorFactory(Type actorType)
             => () =>
-            {
-                var context = this.container.OpenScope();
-                var key = (ActorBase)context.Resolve(actorType);
-                this.references.Add(key, context);
-                return key;
-            };
+                {
+                    var context = this.container.OpenScope();
+                    var key     = (ActorBase)context.Resolve(actorType);
+                    this.references.Add(key, context);
+                    return key;
+                };
 
         public Type GetType(string actorName)
         {
