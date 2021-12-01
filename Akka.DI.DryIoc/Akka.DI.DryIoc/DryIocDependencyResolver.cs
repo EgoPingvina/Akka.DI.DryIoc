@@ -12,18 +12,23 @@ namespace Akka.DI.DryIoc
 {
     public sealed class DryIocDependencyResolver : IDependencyResolver, INoSerializationVerificationNeeded
     {
-        private readonly IContainer container;
-        private readonly ConcurrentDictionary<string, Type> typeCache;
-        private readonly ActorSystem system;
         private readonly ConditionalWeakTable<ActorBase, IResolverContext> references;
+
+        private readonly ConcurrentDictionary<string, Type> typeCache;
+
+        private readonly ActorSystem system;
+
+        private readonly IContainer container;
 
         public DryIocDependencyResolver(IContainer container, ActorSystem system)
         {
-            this.container  = container
-                ?? throw new ArgumentNullException(nameof(container));
+            this.container = container
+                ?? throw
+                     new ArgumentNullException(nameof(container));
 
-            this.system     = system
-                ?? throw new ArgumentNullException(nameof(system));
+            this.system = system
+                ?? throw
+                     new ArgumentNullException(nameof(system));
 
             this.typeCache  = new ConcurrentDictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
             this.references = new ConditionalWeakTable<ActorBase, IResolverContext>();
@@ -44,12 +49,15 @@ namespace Akka.DI.DryIoc
         {
             var type = actorName.GetTypeValue();
             if (type is null)
-                type = this.container.GetServiceRegistrations()
-                                     .Where(registration =>
-                                        registration.ImplementationType.Name.Equals(actorName, StringComparison.OrdinalIgnoreCase))
-                                     .Select(registration =>
-                                        registration.ImplementationType)
-                                     .FirstOrDefault();
+            {
+                type = this.container
+                           .GetServiceRegistrations()
+                           .Where(registration =>
+                              registration.ImplementationType.Name.Equals(actorName, StringComparison.OrdinalIgnoreCase))
+                           .Select(registration =>
+                              registration.ImplementationType)
+                           .FirstOrDefault();
+            }
 
             this.typeCache.TryAdd(actorName, type);
 
@@ -66,7 +74,9 @@ namespace Akka.DI.DryIoc
         public void Release(ActorBase actor)
         {
             if (!this.references.TryGetValue(actor, out IResolverContext lifetimeScope))
+            {
                 return;
+            }
 
             lifetimeScope.Dispose();
             this.references.Remove(actor);
