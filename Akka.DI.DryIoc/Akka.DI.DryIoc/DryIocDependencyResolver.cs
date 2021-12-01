@@ -20,10 +20,10 @@ namespace Akka.DI.DryIoc
         public DryIocDependencyResolver(IContainer container, ActorSystem system)
         {
             this.container  = container
-                ?? throw new ArgumentNullException("container");
+                ?? throw new ArgumentNullException(nameof(container));
 
             this.system     = system
-                ?? throw new ArgumentNullException("system");
+                ?? throw new ArgumentNullException(nameof(system));
 
             this.typeCache  = new ConcurrentDictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
             this.references = new ConditionalWeakTable<ActorBase, IResolverContext>();
