@@ -1,3 +1,6 @@
+![Nuget](https://img.shields.io/nuget/v/Akka.DI.DryIoc)
+![Nuget](https://img.shields.io/nuget/dt/Akka.DI.DryIoc)
+
 # Akka.DI.DryIoc
 
 **Actor Producer Extension** backed by the [DryIoc](https://github.com/dadhi/DryIoc) Dependency Injection Container for the [Akka.NET](https://github.com/akkadotnet/akka.net) framework.
