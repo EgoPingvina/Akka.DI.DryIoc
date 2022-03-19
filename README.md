@@ -1,5 +1,5 @@
-![Nuget](https://img.shields.io/nuget/v/Akka.DI.DryIoc)
-![Nuget](https://img.shields.io/nuget/dt/Akka.DI.DryIoc)
+[![Nuget](https://img.shields.io/nuget/v/Akka.DI.DryIoc)](https://www.nuget.org/packages/Akka.DI.DryIoc)
+[![Nuget](https://img.shields.io/nuget/dt/Akka.DI.DryIoc)](https://www.nuget.org/packages/Akka.DI.DryIoc)
 
 # Akka.DI.DryIoc
 
