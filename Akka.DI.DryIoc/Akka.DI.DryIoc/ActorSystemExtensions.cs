@@ -14,11 +14,7 @@ namespace Akka.Actor
 
         public static ActorSystem UseDryIoC(this ActorSystem system, IContainer container, out IDependencyResolver dependencyResolver)
         {
-            if (container == null)
-            {
-                throw
-                  new ArgumentNullException(nameof(container));
-            }
+            ArgumentNullException.ThrowIfNull(container);
 
             dependencyResolver = new DryIocDependencyResolver(container, system);
 

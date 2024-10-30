@@ -31,7 +31,7 @@ namespace Akka.DI.DryIoc
                      new ArgumentNullException(nameof(system));
 
             this.typeCache  = new ConcurrentDictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
-            this.references = new ConditionalWeakTable<ActorBase, IResolverContext>();
+            this.references = [];
 
             this.system.AddDependencyResolver(this);
         }
@@ -40,24 +40,26 @@ namespace Akka.DI.DryIoc
             => () =>
                 {
                     var context = this.container.OpenScope();
-                    var key     = (ActorBase)context.Resolve(actorType);
+                    var key = (ActorBase)context.Resolve(actorType);
+
                     this.references.Add(key, context);
+
                     return key;
                 };
 
         public Type GetType(string actorName)
         {
             var type = actorName.GetTypeValue();
-            if (type is null)
-            {
-                type = this.container
-                           .GetServiceRegistrations()
-                           .Where(registration =>
-                              registration.ImplementationType.Name.Equals(actorName, StringComparison.OrdinalIgnoreCase))
-                           .Select(registration =>
-                              registration.ImplementationType)
-                           .FirstOrDefault();
-            }
+            
+            type ??=
+                this.container
+                    .GetServiceRegistrations()
+                    .Where(registration =>
+                        registration.ImplementationType
+                                    .Name
+                                    .Equals(actorName, StringComparison.OrdinalIgnoreCase))
+                    .Select(registration => registration.ImplementationType)
+                    .FirstOrDefault();
 
             this.typeCache.TryAdd(actorName, type);
 
@@ -69,7 +71,9 @@ namespace Akka.DI.DryIoc
             => this.Create(typeof(TActor));
 
         public Props Create(Type actorType)
-            => this.system.GetExtension<DIExt>().Props(actorType);
+            => this.system
+                   .GetExtension<DIExt>()
+                   .Props(actorType);
 
         public void Release(ActorBase actor)
         {
@@ -79,6 +83,7 @@ namespace Akka.DI.DryIoc
             }
 
             lifetimeScope.Dispose();
+
             this.references.Remove(actor);
         }
     }
